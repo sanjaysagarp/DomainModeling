@@ -97,13 +97,13 @@ class Person {
     
     func toString() -> String {
         if(self.job == nil && self.spouse == nil) {
-            return "\(self.firstName), \(self.lastName), \(self.age)"
+            return "\(self.firstName), \(self.lastName), \(self.age)";
         } else if(self.job == nil) {
-            return "\(self.firstName), \(self.lastName), \(self.age), \(self.spouse)"
+            return "\(self.firstName), \(self.lastName), \(self.age), \(self.spouse!.firstName) \(self.spouse!.lastName)";
         } else if(self.spouse == nil) {
-            return "\(self.firstName), \(self.lastName), \(self.age), \(self.job)"
+            return "\(self.firstName), \(self.lastName), \(self.age), \(self.job!.title)";
         }
-        return "\(self.firstName), \(self.lastName), \(self.age), \(self.job), \(self.spouse)"
+        return "\(self.firstName), \(self.lastName), \(self.age), \(self.job!.title), \(self.spouse!.firstName) \(self.spouse!.lastName)";
     }
 }
 
@@ -136,47 +136,50 @@ class Family {
         members.append(Person(firstName: firstName, lastName: lastName, age: 0));
     }
     
-    func toString() {
+    func toString() -> String {
+        var result: String = "";
         for person in members {
-            print(person.toString());
+            result += person.toString() + "\n";
         }
+        return result;
     }
 }
+
 //Testing
 var a = Money(amount: 3.0, currency: "USD");
 
 var b = Money(amount: 1.0, currency: "GBP");
 
-print("\(a.amount),\(a.currency)");
+print("\(a.amount),\(a.currency)\n");
 a.add(b);
-print("\(a.amount),\(a.currency)");
+print("\(a.amount),\(a.currency)\n");
 a.subtract(b)
-print("\(a.amount),\(a.currency)");
+print("\(a.amount),\(a.currency)\n");
 
 var c = Job(title: "Salesman", salary: 12.20);
 
 var d = Job(title: "Businessman", salary: 71432.12);
 
-print("\(c.title),\(c.salary)");
+print("\(c.title),\(c.salary)\n");
 c.calculateIncome(12);
 c.raise(8);
-print("\(c.title),\(c.salary)");
-print("\(d.title),\(d.salary)");
+print("\(c.title),\(c.salary)\n");
+print("\(d.title),\(d.salary)\n");
 d.calculateIncome(132);
 d.raise(4);
-print("\(d.title),\(d.salary)");
+print("\(d.title),\(d.salary)\n");
 
 var e = Person(firstName: "Bob", lastName: "Being", age: 2);
 print(e.toString());
 
 var f = Person(firstName: "Ike", lastName: "Being", age: 23, job: d);
-var g = Person(firstName: "Pam", lastName: "Being", age: 26, job: d);
+var g = Person(firstName: "Pam", lastName: "Being", age: 26, job: d, spouse: f);
 
 var h = Family(family: [f,g,e]);
 
 print(h.householdIncome());
-print(h.toString);
+print(h.toString());
 h.haveChild("Billy", lastName: "Being");
-print(h.toString);
+print(h.toString());
 
 
