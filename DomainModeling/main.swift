@@ -8,10 +8,37 @@
 
 import Foundation
 
-struct Money {
+protocol CustomStringConvertuble {
+    var description : String {get};
+}
+
+protocol Mathematics {
+    func +(arg1: Self, arg2: Self) -> Money;
+    func -(arg1: Self, arg2:  Self) -> Money;
+}
+
+extension Double {
+    func USD() -> Money {
+        return Money(amount: self, currency: "USD")
+    }
+    func GBP() -> Money {
+        return Money(amount: self, currency: "GBP")
+    }
+    func EUR() -> Money {
+        return Money(amount: self, currency: "EUR")
+    }
+    func CAN() -> Money {
+        return Money(amount: self, currency: "CAN")
+    }
+}
+
+struct Money : CustomStringConvertible, Mathematics {
     var amount: Double;
     var currency: String;
-    //var curType: currencyType;
+    var description: String {
+        return self.currency + String(self.amount);
+    }
+    
     init(amount: Double = 0.0, currency: String = "USD") {
         self.amount = amount;
         self.currency = currency;
@@ -52,12 +79,30 @@ struct Money {
         money.convert(self.currency);
         self.amount = self.amount - money.amount;
     }
+    
 }
 
-class Job {
+func +(left: Money, var right: Money) -> Money {
+    if(left.currency != right.currency) {
+        right.convert(left.currency);
+    }
+    return Money(amount: left.amount + right.amount, currency: left.currency);
+}
+func -(left: Money, var right: Money) -> Money {
+    if(left.currency != right.currency) {
+        right.convert(left.currency);
+    }
+    return Money(amount: left.amount - right.amount, currency: left.currency);
+}
+
+class Job : CustomStringConvertible {
     var title: String;
     var salary: Double;
     private var hourly: Bool;
+    var description: String {
+        return "Title: " + self.title + ", " + (self.hourly ? "Hourly wage: $" : "Salary: $") + String(self.salary);
+    }
+    
     init(title: String, salary: Double, hourly: Bool = false) {
         self.title = title;
         self.salary = salary;
@@ -76,12 +121,22 @@ class Job {
     }
 }
 
-class Person {
+class Person : CustomStringConvertible {
     var firstName: String;
     var lastName: String;
     var age: Int;
     var job: Job?;
     var spouse: Person?;
+    var description: String {
+        if(self.job == nil && self.spouse == nil) {
+            return "\(self.firstName), \(self.lastName), \(self.age)";
+        } else if(self.job == nil) {
+            return "\(self.firstName), \(self.lastName), \(self.age), \(self.spouse!.firstName) \(self.spouse!.lastName)";
+        } else if(self.spouse == nil) {
+            return "\(self.firstName), \(self.lastName), \(self.age), \(self.job!.title)";
+        }
+        return "\(self.firstName), \(self.lastName), \(self.age), \(self.job!.title), \(self.spouse!.firstName) \(self.spouse!.lastName)";
+    }
     
     init(firstName: String, lastName: String, age: Int, job: Job? = nil, spouse: Person? = nil) {
         self.firstName = firstName;
@@ -96,19 +151,19 @@ class Person {
     }
     
     func toString() -> String {
-        if(self.job == nil && self.spouse == nil) {
-            return "\(self.firstName), \(self.lastName), \(self.age)";
-        } else if(self.job == nil) {
-            return "\(self.firstName), \(self.lastName), \(self.age), \(self.spouse!.firstName) \(self.spouse!.lastName)";
-        } else if(self.spouse == nil) {
-            return "\(self.firstName), \(self.lastName), \(self.age), \(self.job!.title)";
-        }
-        return "\(self.firstName), \(self.lastName), \(self.age), \(self.job!.title), \(self.spouse!.firstName) \(self.spouse!.lastName)";
+        return self.description;
     }
 }
 
-class Family {
+class Family : CustomStringConvertible {
     var members: [Person] = [];
+    var description: String {
+        var result: String = "";
+        for person in members {
+            result += person.toString() + "\n";
+        }
+        return result;
+    }
     init(family: [Person]) {
         var legal = false;
         for person in family {
@@ -137,13 +192,10 @@ class Family {
     }
     
     func toString() -> String {
-        var result: String = "";
-        for person in members {
-            result += person.toString() + "\n";
-        }
-        return result;
+        return self.description;
     }
 }
+
 
 //Testing
 var a = Money(amount: 3.0, currency: "USD");
@@ -182,4 +234,21 @@ print(h.toString());
 h.haveChild("Billy", lastName: "Being");
 print(h.toString());
 
+// CustomStringConvertible test
 
+print(a.description);
+print(b.description);
+print(c.description);
+print(d.description);
+print(e.description);
+print(f.description);
+print(g.description);
+print(h.description);
+
+print(12.0.USD());
+print(128.12.CAN());
+print(11.23.EUR());
+print(433.66.GBP());
+
+print(a + b);
+print(b + Money(amount: 1.10, currency: "GBP"));
