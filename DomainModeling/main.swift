@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol CustomStringConvertuble {
+protocol CustomStringConvertible {
     var description : String {get};
 }
 
