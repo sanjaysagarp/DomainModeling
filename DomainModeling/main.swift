@@ -245,10 +245,14 @@ print(f.description);
 print(g.description);
 print(h.description);
 
+// Extension from Double
 print(12.0.USD());
 print(128.12.CAN());
 print(11.23.EUR());
 print(433.66.GBP());
 
+// Mathematical Operator tests
 print(a + b);
-print(b + Money(amount: 1.10, currency: "GBP"));
+print(b + Money(amount: 1.10, currency: "CAN"));
+print(b - a);
+print(a - Money(amount: 1.10, currency: "EUR"));
