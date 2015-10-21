@@ -13,8 +13,8 @@ protocol CustomStringConvertible {
 }
 
 protocol Mathematics {
-    func +(arg1: Self, arg2: Self) -> Money;
-    func -(arg1: Self, arg2:  Self) -> Money;
+    func +(arg1: Self, arg2: Self) -> Self;
+    func -(arg1: Self, arg2:  Self) -> Self;
 }
 
 extension Double {
